@@ -36,8 +36,6 @@ end
 
 mailfile.flush
 
-system("cat #{mailfile.path}")
-
 if (system("/usr/sbin/sendmail #{DEST_EMAIL} < #{mailfile.path}"))
   puts "Handin successful for #{NAME}/#{CWID}."
 else
