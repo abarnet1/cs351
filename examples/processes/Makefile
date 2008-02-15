@@ -1,4 +1,4 @@
-SRC_FILES = csapp_forks.c exec_argv1.c exec_psd.c exec_psd_imp.c fork_simple.c fork_exam_eg.c fork_exam_eg_imp.c print_exec_args.c printsleepdie.c
+SRC_FILES = csapp_forks.c exec_argv1.c exec_argv1_err.c exec_psd.c exec_psd_imp.c fork_simple.c fork_exam_eg.c fork_exam_eg_imp.c print_exec_args.c printsleepdie.c simple_shell.c
 EXECS     = ${SRC_FILES:.c=}
 O_FILES   = $(SRC_FILES:%.c=%.o)
 

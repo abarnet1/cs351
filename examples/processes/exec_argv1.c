@@ -5,8 +5,6 @@
 #include <string.h>
 
 int main (int argc, char *argv[]) {
-    if (execl(argv[1], "test_arg") < 0) {
-        perror("exec failed!");
-    }
+    execl(argv[1], argv[1]); // need to terminate with a 0!
     return 0;
 }
