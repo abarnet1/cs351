@@ -19,9 +19,9 @@ void eval (char *cmdline) {
     pid_t pid;
 
     bg = parseline(cmdline, argv); 
-    if ((pid = fork()) == 0) {   /* child runs user command */
+    if ((pid = fork()) == 0) {   /* child runs command */
         if (execvp(argv[0], argv) < 0) {
-            printf("%s: Command not found.\n", argv[0]);
+            perror("Command not found");
             exit(0);
         }
     }
@@ -39,15 +39,15 @@ void eval (char *cmdline) {
 int main () {
     char cmdline[MAXLINE]; 
     while (1) {
-    /* read */
+        /* read */
         printf("> ");                   
         fgets(cmdline, MAXLINE, stdin); 
         if (feof(stdin)) {
             exit(0);
         }
-    /* evaluate */
+        /* evaluate */
         eval(cmdline);
-    } /* loop! */
+    }   /* loop! */
     return 0;
 }
 
@@ -60,7 +60,7 @@ int parseline(const char *cmdline, char **argv)
     int bg;                     /* background job? */
 
     strcpy(buf, cmdline);
-    buf[strlen(buf)-1] = ' ';  /* replace trailing '\n' with space */
+    buf[strlen(buf)-1] = ' ';   /* replace trailing '\n' with space */
     while (*buf && (*buf == ' ')) /* ignore leading spaces */
         buf++;
 
@@ -79,7 +79,7 @@ int parseline(const char *cmdline, char **argv)
         *delim = '\0';
         buf = delim + 1;
         while (*buf && (*buf == ' ')) /* ignore spaces */
-           buf++;
+            buf++;
 
         if (*buf == '\'') {
             buf++;
@@ -90,9 +90,9 @@ int parseline(const char *cmdline, char **argv)
         }
     }
     argv[argc] = NULL;
-    
+
     if (argc == 0)  /* ignore blank line */
-        return 1;
+        return 0;
 
     /* should the job run in the background? */
     if ((bg = (*argv[argc-1] == '&')) != 0) {
