@@ -1,4 +1,4 @@
-#! /usr/bin/env ruby
+#! /usr/local/bin/ruby
 
 require 'net/smtp'
 require 'rubygems'
