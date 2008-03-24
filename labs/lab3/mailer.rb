@@ -4,17 +4,19 @@ require 'rubygems'
 require 'actionmailer'
 require 'activesupport'
 
-SMTP_HOST  = 'localhost'
-SMTP_PORT  = 25
-DEST_EMAIL = 'lee@iit.edu'
-FROM_EMAIL = 'cs351@host220.cns.iit.edu'
-COURSE_ID  = 'CS 351'
-LAB_NAME   = 'malloclab'
+SMTP_HOST   = 'localhost'
+SMTP_PORT   = 25
+SMTP_DOMAIN = 'host220.cns.iit.edu'
+DEST_EMAIL  = 'lee@iit.edu'
+FROM_EMAIL  = 'cs351@host220.cns.iit.edu'
+COURSE_ID   = 'CS 351'
+LAB_NAME    = 'malloclab'
 
 ActionMailer::Base.delivery_method = :smtp
 ActionMailer::Base.smtp_settings = { 
   :address => SMTP_HOST,
-  :port    => SMTP_PORT
+  :port    => SMTP_PORT,
+  :domain  => SMTP_DOMAIN
 }
 
 class Mailer < ActionMailer::Base
@@ -95,7 +97,7 @@ if $0 == __FILE__
   end
 
   begin
-    Mailer.deliver_lab_handin(DEST_EMAIL, 'cs351@soi2.org', subject, mail_text, ARGV)
+    Mailer.deliver_lab_handin(DEST_EMAIL, FROM_EMAIL, subject, mail_text, ARGV)
     puts "Submission successful for #{team.to_sentence}"
   rescue Exception => e
     puts "Error sending mail: #{e}"
