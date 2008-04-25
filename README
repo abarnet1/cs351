@@ -1,0 +1,17 @@
+CS 351 Repository
+=================
+
+CS 351 students will find all labs, handouts, and example source code here.
+
+To clone the repository, use the command:
+    git clone git@github.com:michaelee/cs351.git cs351
+
+This will create a local git repository for you in 'cs351' under your current directory and automatically create and check out an initial branch named 'master' based on the remote repository's active branch (maintained by me).  At this point you may work in your local git repository and use it for your personal version control needs.
+
+Your local repository will automatically track all branches in the remote repository (mine), named 'origin' by default.  You can update all the remote-tracking branches in your repository with the command 'git fetch'.  If you wish to merge all changes from the remote master branch with your own current master branch, use the command 'git pull'.  I will likely ask you to run the last operation multiple times throughout the semester in order to obtain lab updates and new sample source code as they become available.
+
+Git has a comprehensive online help system that you can access with the commands 'git help' and 'git help SOME_COMMAND'.
+
+Feel free to contact me if you're in my class and you need help setting up and/or using git.
+
+Enjoy!
