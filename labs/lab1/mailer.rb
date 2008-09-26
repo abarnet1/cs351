@@ -10,7 +10,7 @@ SMTP_DOMAIN = 'host220.cns.iit.edu'
 DEST_EMAIL  = 'lee@iit.edu'
 FROM_EMAIL  = 'cs351@host220.cns.iit.edu'
 COURSE_ID   = 'CS 351'
-LAB_NAME    = 'malloclab'
+LAB_NAME    = 'clab'
 
 ActionMailer::Base.delivery_method = :smtp
 ActionMailer::Base.smtp_settings = { 
