@@ -1,15 +1,44 @@
 #! /usr/local/bin/ruby
 
-require 'net/smtp'
 require 'rubygems'
-require 'mailfactory'
+require 'actionmailer'
+require 'activesupport'
 
-SMTP_HOST  = 'localhost'
-SMTP_PORT  = 25
-DEST_EMAIL = 'lee@iit.edu'
-FROM_EMAIL = 'cs351@host220.cns.iit.edu'
-COURSE_ID  = 'CS 351'
-LAB_NAME   = 'shlab'
+SMTP_HOST   = 'localhost'
+SMTP_PORT   = 25
+SMTP_DOMAIN = 'host220.cns.iit.edu'
+DEST_EMAIL  = 'lee@iit.edu'
+FROM_EMAIL  = 'cs351@host220.cns.iit.edu'
+COURSE_ID   = 'CS 351'
+LAB_NAME    = 'shell lab'
+
+ActionMailer::Base.delivery_method = :smtp
+ActionMailer::Base.smtp_settings = { 
+  :address => SMTP_HOST,
+  :port    => SMTP_PORT,
+  :domain  => SMTP_DOMAIN
+}
+
+class Mailer < ActionMailer::Base
+  def lab_handin(dest, sender, subj, body, files)
+    recipients      dest
+    from            sender
+    subject         subj
+    body            body
+
+    files.each do |file| 
+      if !(File.exists?(file) and File.readable?(file))
+        puts "Can't read or locate file: #{file}"
+        exit
+      else
+        puts "Sending #{File.basename(file)}, last modified #{File.mtime(file)}..."
+        attachment :content_type => "text/plain", 
+                   :body         => File.read(file),
+                   :filename     => file.gsub(/.*\//, '')
+      end
+    end
+  end
+end
 
 class Student 
   attr_accessor :name, :cwid
@@ -34,15 +63,12 @@ def read_team
   return team
 end
 
+
 if $0 == __FILE__
   if ARGV.length < 1
     puts "No attachments specified.  Submission aborted."
     exit
   end
-
-  mail = MailFactory.new
-  mail.to = DEST_EMAIL
-  mail.from = FROM_EMAIL
 
   team = []
   loop do
@@ -57,37 +83,22 @@ if $0 == __FILE__
     team.each do |member|
       puts "\t#{member.name} / #{member.cwid}"
     end
-    
+
     print "Continue? (Y/n): "
-    
+
     break unless $stdin.gets.downcase =~ /n/
   end
 
-  pretty_names = team.inject {|anded, n| "#{anded} and #{n}"}
-  mail.subject = "#{COURSE_ID} #{LAB_NAME} submission for #{pretty_names}"
-  
+  subject = "#{COURSE_ID} #{LAB_NAME} submission for #{team.to_sentence}"
+
   mail_text = "Lab submission for:\n\t#{team[0].name} / #{team[0].cwid}\n"
   for i in 1...team.length
     mail_text += "\t#{team[i].name} / #{team[i].cwid}\n"
   end
-  mail.text = mail_text
-
-  puts
-  ARGV.each do |to_send| 
-    if !(File.exists?(to_send) and File.readable?(to_send))
-      puts "Can't read or locate file: #{to_send}"
-      exit
-    else
-      puts "Sending #{File.basename(to_send)}, last modified #{File.mtime(to_send)}..."
-      mail.attach(to_send)
-    end
-  end
 
   begin
-    Net::SMTP.start(SMTP_HOST, SMTP_PORT) do |smtp|
-      smtp.send_message(mail.to_s(), mail.from.first, mail.to.first)
-    end
-    puts "Submission successful for #{pretty_names}"
+    Mailer.deliver_lab_handin(DEST_EMAIL, FROM_EMAIL, subject, mail_text, ARGV)
+    puts "Submission successful for #{team.to_sentence}"
   rescue Exception => e
     puts "Error sending mail: #{e}"
     exit
