@@ -28,7 +28,7 @@ class Mailer < ActionMailer::Base
 
     files.each do |file| 
       if !(File.exists?(file) and File.readable?(file))
-        puts "Can't read or locate file: #{to_send}"
+        puts "Can't read or locate file: #{file}"
         exit
       else
         puts "Sending #{File.basename(file)}, last modified #{File.mtime(file)}..."
